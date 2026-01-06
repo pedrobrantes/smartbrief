@@ -8,55 +8,62 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from src.settings import EMAIL_TO, CHART_THEME
 from src.collectors.finance import get_market_data
+from src.collectors.news import get_news_briefing
 from src.visualizers.charts import generate_chart_url
-from src.agents.analyst import generate_market_report # Changed import name
+from src.agents.analyst import generate_daily_report
 from src.core.mailer import send_email
 
 def main():
-    print("🚀 Starting SmartBrief Agent...")
+    print("🚀 Starting SmartBrief OS...")
 
-    # 1. Extract
-    print("📥 Collecting data...")
+    # 1. Collect Data (Parallelizable in future)
+    print("📥 Collecting Finance...")
     market_data = get_market_data()
-    if not market_data:
-        print("❌ No data. Aborting.")
-        return
-
-    # 2. Agent Decision (The Brain)
-    print("🧠 Agent is thinking...")
-    report = generate_market_report(market_data)
     
-    summary_text = report.get("summary", "No summary.")
-    chart_decision = report.get("chart_type", "bar")
-    should_show_chart = report.get("show_chart", True)
+    print("📥 Collecting News...")
+    news_data = get_news_briefing()
 
-    print(f"💡 Agent decided: Chart='{chart_decision}'")
+    # 2. AI Processing
+    print("🧠 Editor-in-Chief is working...")
+    report = generate_daily_report(market_data, news_data)
+    
+    # Extract AI decisions
+    market_summary = report.get("market_summary", "")
+    news_summary = report.get("news_summary", "")
+    word_data = report.get("word_of_day", {})
+    trivia = report.get("trivia", "")
+    chart_conf = report.get("chart_config", {})
 
-    # 3. Load / Visualize (Conditional)
+    # 3. Visualization
     chart_url = None
-    if should_show_chart and chart_decision != "none":
-        print(f"🎨 Generating {chart_decision} chart...")
-        chart_url = generate_chart_url(market_data, chart_type=chart_decision)
+    if chart_conf.get("show"):
+        print(f"🎨 Generating {chart_conf.get('type')} chart...")
+        chart_url = generate_chart_url(market_data, chart_type=chart_conf.get('type', 'bar'))
 
     # 4. Render
-    print("📝 Rendering...")
+    print("📝 Rendering HTML...")
     env = Environment(loader=FileSystemLoader('src/templates'))
     template = env.get_template('email.html')
     
     html_content = template.render(
-        title="SmartBrief Daily",
+        title="Daily Briefing",
         date=datetime.now().strftime("%B %d, %Y"),
-        items=market_data,
+        market_items=market_data,
+        news_items=news_data,
         chart_url=chart_url,
         palette=CHART_THEME,
-        ai_summary=summary_text
+        # AI Content
+        market_summary=market_summary,
+        news_summary=news_summary,
+        word=word_data,
+        trivia=trivia
     )
 
     # 5. Send
     print(f"📨 Sending to {EMAIL_TO}...")
     try:
-        result = send_email(EMAIL_TO, "SmartBrief: AI Report", html_content)
-        print(f"✅ Success! ID: {result.get('id')}")
+        send_email(EMAIL_TO, f"Briefing: {datetime.now().strftime('%d/%m')}", html_content)
+        print("✅ Sent!")
     except Exception as e:
         print(f"❌ Failed: {e}")
 
