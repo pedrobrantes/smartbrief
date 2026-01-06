@@ -5,6 +5,7 @@ load_dotenv()
 
 RESEND_API_KEY = os.getenv("RESEND_API_KEY")
 EMAIL_TO = os.getenv("EMAIL_TO")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 TICKERS = [
     "USDBRL=X",
