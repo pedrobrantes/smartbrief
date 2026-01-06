@@ -1,11 +1,14 @@
 [project]
 name = "smartbrief"
 version = "0.1.0"
-description = "Add your description here"
+description = "Send brief to email with Material You Design"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
+    "feedparser>=6.0.12",
+    "google-genai>=1.56.0",
     "jinja2>=3.1.6",
+    "mjml>=0.12.0",
     "pandas>=2.3.3",
     "python-dotenv>=1.2.1",
     "requests>=2.32.5",

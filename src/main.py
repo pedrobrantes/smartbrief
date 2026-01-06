@@ -16,7 +16,7 @@ from src.agents.analyst import generate_daily_report
 from src.core.mailer import send_email
 
 def main():
-    print("🚀 Starting SmartBrief OS...")
+    print("🚀 Starting SmartBrief...")
 
     # 1. Data Collection
     print("📥 Collecting Finance Data...")
