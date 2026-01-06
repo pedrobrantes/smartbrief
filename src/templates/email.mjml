@@ -1,0 +1,127 @@
+<mjml>
+  <mj-head>
+    <mj-title>{{ title }}</mj-title>
+    <mj-font name="Roboto" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" />
+    <mj-attributes>
+      <mj-all font-family="Roboto, Helvetica, Arial, sans-serif" />
+      <mj-text font-size="14px" color="{{ palette.text }}" line-height="24px" />
+      <mj-section padding="0px" />
+    </mj-attributes>
+    <mj-style>
+      .round-box { border-radius: 16px; overflow: hidden; }
+      .shadow { box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    </mj-style>
+  </mj-head>
+
+  <mj-body background-color="{{ palette.bg }}" width="600px">
+    
+    <mj-section padding="20px"></mj-section>
+
+    <mj-wrapper background-color="{{ palette.card }}" padding="0" css-class="round-box shadow">
+
+      <mj-section background-color="{{ palette.primary }}" padding="30px">
+        <mj-column>
+          <mj-text color="#FFFFFF" font-size="24px" font-weight="bold" align="center">
+            {{ title }}
+          </mj-text>
+          <mj-text color="rgba(255,255,255,0.8)" font-size="12px" align="center" padding-top="5px">
+            {{ date }}
+          </mj-text>
+        </mj-column>
+      </mj-section>
+
+      <mj-section padding="20px 30px">
+        <mj-column background-color="#F5F5F5" border-left="4px solid {{ palette.primary }}" border-radius="4px" padding="10px">
+          <mj-text>
+            <strong>Market:</strong> {{ market_summary }}
+          </mj-text>
+          <mj-text padding-top="10px">
+            <strong>News:</strong> {{ news_summary }}
+          </mj-text>
+        </mj-column>
+      </mj-section>
+
+      {% if chart_url %}
+      <mj-section padding="0 30px 20px 30px">
+        <mj-column>
+          <mj-image src="{{ chart_url }}" border-radius="8px" alt="Market Chart" />
+        </mj-column>
+      </mj-section>
+      {% endif %}
+
+      <mj-section padding="10px 30px">
+        <mj-column>
+          <mj-text font-size="12px" text-transform="uppercase" color="#999" letter-spacing="1px" padding-bottom="10px">
+            Market Watch
+          </mj-text>
+          
+          <mj-table padding="0">
+            {% for item in market_items %}
+            <tr style="border-bottom:1px solid #F5F5F5;">
+              <td style="padding: 10px 0; font-weight: 600;">{{ item.name }}</td>
+              <td style="padding: 10px 0; text-align: right;">
+                {{ "%.2f"|format(item.price) }}
+                <span style="color: {% if item.change >= 0 %}{{ palette.gain }}{% else %}{{ palette.loss }}{% endif %}; font-weight: bold; margin-left: 8px;">
+                   {% if item.change >= 0 %}▲{% else %}▼{% endif %} {{ "%.2f"|format(item.change) }}%
+                </span>
+              </td>
+            </tr>
+            {% endfor %}
+          </mj-table>
+        </mj-column>
+      </mj-section>
+
+      <mj-section padding="20px 30px">
+        <mj-column border="1px solid #EEE" border-radius="8px" background-color="#FAFAFA" padding="10px">
+          <mj-text font-size="10px" text-transform="uppercase" color="#999" letter-spacing="1px">
+            Word of the Day
+          </mj-text>
+          <mj-text font-size="18px" color="{{ palette.primary }}" font-weight="bold" padding-top="5px">
+            {{ word.word }}
+          </mj-text>
+          <mj-text color="#555">
+            {{ word.translation }}
+          </mj-text>
+          <mj-text font-style="italic" color="#777" padding-top="5px">
+            "{{ word.example }}"
+          </mj-text>
+        </mj-column>
+      </mj-section>
+
+      <mj-section padding="10px 30px 30px 30px">
+        <mj-column>
+          <mj-text font-size="12px" text-transform="uppercase" color="#999" letter-spacing="1px" padding-bottom="10px">
+            Latest Updates
+          </mj-text>
+
+          {% for news in news_items %}
+          <mj-text padding="10px 0">
+            {% if "Topic:" in news.tag %}
+            <span style="background-color: #EFEBE9; color: {{ palette.primary }}; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: bold; text-transform: uppercase; margin-right: 5px;">
+              {{ news.tag|replace("Topic: ", "") }}
+            </span>
+            {% endif %}
+            <a href="{{ news.link }}" style="text-decoration: none; color: {{ palette.text }}; font-weight: 600; font-size: 15px;">
+              {{ news.title }}
+            </a>
+            <br />
+            <span style="font-size: 11px; color: #999;">{{ news.source }}</span>
+          </mj-text>
+          {% endfor %}
+        </mj-column>
+      </mj-section>
+
+      <mj-section background-color="#FAFAFA" padding="15px">
+        <mj-column>
+          <mj-text align="center" font-size="12px" color="#666">
+            💡 {{ trivia }}
+          </mj-text>
+        </mj-column>
+      </mj-section>
+
+    </mj-wrapper>
+    
+    <mj-section padding="20px"></mj-section>
+
+  </mj-body>
+</mjml>
