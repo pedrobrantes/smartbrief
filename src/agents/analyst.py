@@ -1,62 +1,66 @@
 import json
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 from src.settings import GEMINI_API_KEY
 
-def generate_market_report(data):
+def generate_daily_report(market_data, news_data):
     """
-    Returns a dictionary with 'summary', 'chart_type', and 'show_chart'.
+    Uses Gemini (New SDK) to act as a Daily Editor.
+    Generates: Market Summary, News Highlights, Word of the Day, and Trivia.
     """
-    if not data:
-        return {"summary": "No data available.", "show_chart": False, "chart_type": "none"}
+    # Default structure in case of failure
+    fallback = {
+        "market_summary": "Data available below.",
+        "news_summary": "Check the links below.",
+        "word_of_day": {"word": "Error", "translation": "Erro", "definition": "AI Unavailable", "example": "-"},
+        "trivia": "Did you know? APIs can fail sometimes.",
+        "chart_config": {"show": True, "type": "bar"}
+    }
 
     if not GEMINI_API_KEY:
-        return _fallback_report(data)
+        return fallback
 
     try:
-        genai.configure(api_key=GEMINI_API_KEY)
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        client = genai.Client(api_key=GEMINI_API_KEY)
 
-        context_str = "\n".join([
-            f"- {item['name']}: {item['change']:.2f}%" for item in data
-        ])
+        # Prepare context
+        market_str = "\n".join([f"- {i['name']}: {i['change']:.2f}%" for i in market_data])
+        news_str = "\n".join([f"- [{i['source']}] {i['title']}" for i in news_data[:5]])
 
         prompt = f"""
-        You are an AI Editor for a financial newsletter.
+        You are the Editor-in-Chief of "SmartBrief", a personal daily newsletter.
         
-        Market Data:
-        {context_str}
+        INPUT DATA:
+        Market:
+        {market_str}
+        
+        Top Headlines:
+        {news_str}
 
-        Task:
-        1. Write a witty, professional summary (max 50 words).
-        2. Decide if a chart is necessary to visualize this data.
-        3. Choose the best chart type:
-           - "bar": Good for comparing winners/losers.
-           - "horizontalBar": Good if names are long or for ranking.
-           - "doughnut": Good if data represents parts of a whole (rarely for price changes, but possible).
-           - "none": If data is boring or unclear.
+        TASK:
+        Generate a JSON response with the following sections:
+        1. "market_summary": A witty financial summary (max 40 words).
+        2. "news_summary": A synthesized paragraph connecting the top stories (max 50 words).
+        3. "word_of_day": A useful/sophisticated English word.
+           - Fields: "word", "translation" (PT-BR), "definition" (English), "example" (sentence).
+        4. "trivia": A random, interesting fact about science, history, or tech.
+        5. "chart_config": Decide visualization.
+           - "show": true/false
+           - "type": "bar", "horizontalBar", or "doughnut"
 
-        Output strictly valid JSON:
-        {{
-            "summary": "Your text here",
-            "show_chart": true/false,
-            "chart_type": "bar" | "horizontalBar" | "doughnut" | "none"
-        }}
+        Ensure the JSON is valid.
         """
 
-        response = model.generate_content(
-            prompt,
-            generation_config={"response_mime_type": "application/json"}
+        response = client.models.generate_content(
+            model='gemini-2.0-flash', # Or gemini-1.5-flash
+            contents=prompt,
+            config=types.GenerateContentConfig(
+                response_mime_type='application/json'
+            )
         )
         
         return json.loads(response.text)
 
     except Exception as e:
         print(f"❌ AI Error: {e}")
-        return _fallback_report(data)
-
-def _fallback_report(data):
-    return {
-        "summary": "Market data processed (AI unavailable).",
-        "show_chart": True,
-        "chart_type": "bar"
-    }
+        return fallback
