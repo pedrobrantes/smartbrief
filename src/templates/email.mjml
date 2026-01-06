@@ -123,7 +123,7 @@
             <img src="{{ icons.news }}" width="20" height="20" class="icon-align" style="margin-right:4px; opacity:0.6" /> Selected Headlines
           </mj-text>
 
-          {% for news in news_items[:15] %}
+          {% for news in news_items[:10] %}
           <mj-text padding="0">
             <div style="background-color:#FAFAFA; border-radius:12px; padding:12px; margin-bottom:10px; border:1px solid #F0F0F0;">
               {% if "Topic:" in news.tag %}
