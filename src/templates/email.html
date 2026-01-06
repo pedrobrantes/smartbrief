@@ -1,58 +1,63 @@
 <!DOCTYPE html>
 <html>
-<body style="margin: 0; padding: 0; background-color: {{ palette.bg }}; font-family: 'Helvetica', 'Arial', sans-serif;">
+<body style="margin: 0; padding: 0; background-color: {{ palette.bg }}; font-family: 'Helvetica', 'Arial', sans-serif; color: {{ palette.text }};">
     <center>
-        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: {{ palette.bg }}; padding: 40px 10px;">
-            <tr>
-                <td align="center">
-                    <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 500px; background-color: {{ palette.card }}; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow: hidden;">
-                        
-                        <tr>
-                            <td style="padding: 30px 30px 10px 30px;">
-                                <h2 style="margin: 0; color: {{ palette.primary }}; font-size: 24px;">{{ title }}</h2>
-                                <p style="margin: 5px 0 0 0; color: #A1887F; font-size: 12px;">{{ date }}</p>
-                            </td>
-                        </tr>
+        <table width="100%" cellpadding="0" cellspacing="0" style="padding: 20px;">
+            <tr><td align="center">
+                <table width="100%" style="max-width: 600px; background: {{ palette.card }}; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                    
+                    <tr><td style="padding: 30px; background: {{ palette.primary }};">
+                        <h1 style="margin: 0; color: #FFF; font-size: 24px;">{{ title }}</h1>
+                        <p style="margin: 5px 0 0 0; color: rgba(255,255,255,0.8); font-size: 13px;">{{ date }}</p>
+                    </td></tr>
 
-                        {% if chart_url %}
-                        <tr>
-                            <td align="center" style="padding: 10px 0;">
-                                <img src="{{ chart_url }}" width="100%" style="border-radius: 12px; max-width: 480px; display: block;" alt="Chart">
-                            </td>
-                        </tr>
-                        {% endif %}
+                    <tr><td style="padding: 25px 30px 10px;">
+                        <div style="background: #F5F5F5; padding: 15px; border-radius: 8px; font-size: 14px; line-height: 1.5; border-left: 4px solid {{ palette.primary }};">
+                            <strong>Market:</strong> {{ market_summary }}<br><br>
+                            <strong>News:</strong> {{ news_summary }}
+                        </div>
+                    </td></tr>
 
-                        <tr>
-                            <td style="padding: 10px 30px 40px 30px;">
-                                <table width="100%" cellspacing="0">
-                                    {% for item in items %}
-                                    <tr>
-                                        <td style="padding: 12px 0; border-bottom: 1px solid #EEE; color: {{ palette.text }}; font-weight: 600;">
-                                            {{ item.name }}
-                                        </td>
-                                        <td style="padding: 12px 0; border-bottom: 1px solid #EEE; text-align: right;">
-                                            <div style="color: {{ palette.text }}; font-size: 14px;">
-                                                {{ "%.2f"|format(item.price) }}
-                                            </div>
-                                            <div style="font-size: 12px; font-weight: bold; color: {% if item.change >= 0 %}{{ palette.gain }}{% else %}{{ palette.loss }}{% endif %};">
-                                                {% if item.change >= 0 %}▲{% else %}▼{% endif %} {{ "%.2f"|format(item.change) }}%
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </table>
-                            </td>
-                        </tr>
+                    {% if chart_url %}
+                    <tr><td align="center" style="padding: 10px 30px;">
+                        <img src="{{ chart_url }}" width="100%" style="border-radius: 8px;">
+                    </td></tr>
+                    {% endif %}
 
-                        <tr>
-                            <td align="center" style="background-color: #EFEBE9; padding: 15px; color: #A1887F; font-size: 11px;">
-                                Automated by SmartBrief System
-                            </td>
-                        </tr>
+                    <tr><td style="padding: 10px 30px;">
+                        <div style="border: 1px solid #EEE; border-radius: 8px; padding: 15px;">
+                            <p style="margin: 0 0 5px; font-size: 10px; text-transform: uppercase; color: #999; letter-spacing: 1px;">Word of the Day</p>
+                            <h3 style="margin: 0; color: {{ palette.primary }};">{{ word.word }}</h3>
+                            <p style="margin: 2px 0 10px; font-size: 13px; color: #666;">{{ word.translation }}</p>
+                            <p style="margin: 0; font-size: 13px; font-style: italic;">"{{ word.example }}"</p>
+                        </div>
+                    </td></tr>
 
-                    </table>
-                </td>
-            </tr>
+                    <tr><td style="padding: 20px 30px;">
+                        <h3 style="border-bottom: 2px solid #EEE; padding-bottom: 10px; margin-bottom: 15px;">Latest Updates</h3>
+                        {% for news in news_items %}
+                        <div style="margin-bottom: 15px;">
+                            {% if "Topic:" in news.tag %}
+                            <span style="background: #EFEBE9; color: {{ palette.primary }}; font-size: 9px; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; font-weight: bold;">
+                                {{ news.tag|replace("Topic: ", "") }}
+                            </span>
+                            {% endif %}
+                            
+                            <a href="{{ news.link }}" style="text-decoration: none; color: {{ palette.text }}; font-weight: bold; font-size: 15px; display: block; margin-top: 4px;">
+                                {{ news.title }}
+                            </a>
+                            <div style="font-size: 11px; color: #999; margin-top: 2px;">
+                                {{ news.source }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </td></tr>
+
+                    <tr><td style="padding: 20px 30px; background: #FAFAFA; text-align: center; font-size: 12px; color: #666;">
+                        💡 {{ trivia }}
+                    </td></tr>
+                </table>
+            </td></tr>
         </table>
     </center>
 </body>
