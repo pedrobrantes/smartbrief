@@ -1,7 +1,6 @@
 <mjml>
   <mj-head>
     <mj-title>{{ title }}</mj-title>
-    <mj-font name="Roboto" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700" />
     <mj-attributes>
       <mj-all font-family="Roboto, Helvetica, Arial, sans-serif" />
       <mj-text font-size="14px" color="{{ palette.text }}" line-height="24px" />
