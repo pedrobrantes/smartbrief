@@ -22,17 +22,17 @@ CHART_THEME = {
     "muted": "999999"
 }
 
-def _icon(name, color_key):
+def _icon(name, color_key, size=96):
     color = CHART_THEME.get(color_key, CHART_THEME['primary'])
-    return f"https://img.icons8.com/material-sharp/48/{color}/{name}.png"
+    return f"https://img.icons8.com/material-sharp/{size}/{color}/{name}.png"
 
 ICONS = {
     "market": _icon("line-chart", "primary"),
     "news": _icon("news", "primary"),
     "trending": _icon("fire", "accent"),
-    "word": _icon("bookmark", "primary"),
-    "trivia": _icon("idea", "accent"),
-    "arrow_up": _icon("filled-sent", "gain"),
-    "arrow_down": _icon("filled-sent", "loss"),
-    "link": _icon("external-link", "muted")
+    "word": _icon("dictionary", "primary"),
+    "trivia": _icon("light", "primary"),
+    "arrow_up": _icon("filled-sent", "gain", size=48),
+    "arrow_down": _icon("filled-sent", "loss", size=48),
+    "link": _icon("external-link", "muted", size=48)
 }
