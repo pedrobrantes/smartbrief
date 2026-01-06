@@ -1,20 +1,20 @@
 import json
 import time
-import random
 from google import genai
 from google.genai import types
 from src.settings import GEMINI_API_KEY, GEMINI_MODELS_PRIORITY
 
 def generate_daily_report(market_data, news_data):
-    """
-    Agent with Model Cascading.
-    If the primary model hits a rate limit (429), it switches to the next model in the priority list.
-    """
     fallback = {
-        "market_summary": "Data available below (AI unavailable).",
-        "news_summary": "Check the links below.",
-        "word_of_day": {"word": "Persistence", "translation": "Persistência", "definition": "Firm continuance in a course of action.", "example": "Coding requires persistence."},
-        "trivia": "Did you know? This report fell back to legacy logic.",
+        "market_summary": "Market data analyzed. Check details below.",
+        "news_summary": "Top headlines synthesized. Links available.",
+        "word_of_day": {
+            "word": "Resilience", 
+            "translation": "Resiliência", 
+            "definition": "The capacity to recover quickly from difficulties.", 
+            "example": "The system showed resilience by switching models."
+        },
+        "trivia": "AI models can sometimes be overloaded during peak hours.",
         "chart_config": {"show": True, "type": "bar"}
     }
 
@@ -29,24 +29,19 @@ def generate_daily_report(market_data, news_data):
     prompt = f"""
     You are the Editor-in-Chief of "SmartBrief".
     
-    INPUT DATA:
-    Market:
-    {market_str}
-    Top Headlines:
-    {news_str}
+    DATA:
+    Market: {market_str}
+    News: {news_str}
 
     TASK:
-    Generate a JSON response with:
-    1. "market_summary": Witty financial summary (max 40 words).
-    2. "news_summary": Synthesized paragraph connecting stories (max 50 words).
-    3. "word_of_day": Useful English word. Fields: "word", "translation" (PT-BR), "definition", "example".
+    Generate JSON:
+    1. "market_summary": Witty summary (40 words).
+    2. "news_summary": Synthesized news (50 words).
+    3. "word_of_day": "word", "translation", "definition", "example".
     4. "trivia": Interesting fact.
-    5. "chart_config": {{"show": true, "type": "bar"|"horizontalBar"|"doughnut"}}
-
-    Output strictly valid JSON.
+    5. "chart_config": {{"show": true, "type": "bar"}}
     """
 
-    # --- MODEL CASCADING LOGIC ---
     for model_name in GEMINI_MODELS_PRIORITY:
         try:
             print(f"   ↳ 🧠 Trying model: {model_name}...")
@@ -61,17 +56,14 @@ def generate_daily_report(market_data, news_data):
             return json.loads(response.text)
 
         except Exception as e:
-            error_msg = str(e)
-            if "429" in error_msg or "RESOURCE_EXHAUSTED" in error_msg:
-                print(f"   ⚠️ Rate Limit on {model_name}. Switching...")
-                time.sleep(1) # Brief pause before next model
-                continue # Try next model in list
-            elif "404" in error_msg:
-                print(f"   ⚠️ Model {model_name} not found. Switching...")
+            err = str(e).upper()
+            # Catch 429 (Rate Limit), 503 (Overloaded), 500 (Internal), 404 (Missing)
+            if any(code in err for code in ["429", "503", "500", "404", "RESOURCE_EXHAUSTED", "UNAVAILABLE"]):
+                print(f"   ⚠️ {model_name} unavailable ({err[:15]}...). Switching...")
+                time.sleep(1)
                 continue
             else:
-                print(f"   ❌ Critical AI Error ({model_name}): {e}")
-                # If it's not a rate limit, it might be a prompt issue, so we stop to save time
+                print(f"   ❌ Fatal Error on {model_name}: {e}")
                 break
     
     print("❌ All AI models failed. Using fallback.")
