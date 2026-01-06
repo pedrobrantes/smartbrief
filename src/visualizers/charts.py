@@ -1,6 +1,52 @@
 import requests
 from src.settings import CHART_THEME
 
+def generate_sparkline_url(data_points, is_positive):
+    if not data_points: return None
+    
+    color = CHART_THEME['gain'] if is_positive else CHART_THEME['loss']
+    
+    config = {
+        "type": "line",
+        "data": {
+            "labels": list(range(len(data_points))),
+            "datasets": [{
+                "data": data_points,
+                "borderColor": color,
+                "borderWidth": 4,
+                "fill": False,
+                "pointRadius": 0,
+                "tension": 0.4
+            }]
+        },
+        "options": {
+            "legend": {"display": False},
+            "scales": {
+                "xAxes": [{"display": False}],
+                "yAxes": [{"display": False}]
+            },
+            "layout": {"padding": 5}
+        }
+    }
+
+    try:
+        response = requests.post(
+            "https://quickchart.io/chart/create",
+            json={
+                "chart": config,
+                "width": 120,
+                "height": 50,
+                "backgroundColor": "transparent",
+                "format": "png",
+                "version": "2"
+            },
+            timeout=5
+        )
+        if response.status_code == 200:
+            return response.json().get('url')
+    except:
+        return None
+
 def generate_chart_url(data, chart_type="bar"):
     if not data or chart_type == "none":
         return None
@@ -16,22 +62,22 @@ def generate_chart_url(data, chart_type="bar"):
             "datasets": [{
                 "data": values,
                 "backgroundColor": colors,
-                "borderRadius": 50,      # Pill shape
-                "borderSkipped": False,  # Fully rounded
-                "barThickness": 18,      # Thinner, more elegant bars
+                "borderRadius": 50,
+                "borderSkipped": False,
+                "barThickness": 18,
             }]
         },
         "options": {
-            "devicePixelRatio": 2.0,     # HIGH RES (Retina Quality)
+            "devicePixelRatio": 2.0,
             "legend": {"display": False},
-            "layout": {"padding": {"top": 10, "bottom": 10}}, # Space to breathe
+            "layout": {"padding": {"top": 10, "bottom": 10}},
             "scales": {
-                "yAxes": [{"display": False}], # Hidden Y Axis
+                "yAxes": [{"display": False}],
                 "xAxes": [{
                     "display": True,
                     "gridLines": {"display": False, "drawBorder": False},
                     "ticks": {
-                        "fontColor": "#999999", # Lighter text
+                        "fontColor": "#999999",
                         "fontFamily": "Roboto, sans-serif",
                         "fontSize": 10,
                         "padding": 5
@@ -41,7 +87,6 @@ def generate_chart_url(data, chart_type="bar"):
         }
     }
 
-    # Tweaks for other types
     if chart_type == "horizontalBar":
         config["options"]["scales"]["xAxes"][0]["display"] = False
         config["options"]["scales"]["yAxes"] = [{"display": True, "gridLines": {"display": False}, "ticks": {"fontColor": "#3E2723"}}]
@@ -51,8 +96,8 @@ def generate_chart_url(data, chart_type="bar"):
             "https://quickchart.io/chart/create",
             json={
                 "chart": config,
-                "width": 600,  # Wider
-                "height": 250, # Taller
+                "width": 600,
+                "height": 250,
                 "backgroundColor": "white",
                 "format": "png",
                 "version": "2"
