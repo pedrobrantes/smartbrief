@@ -30,7 +30,7 @@ def _icon(name, color_key, size=96):
 ICONS = {
     "market": _icon("line-chart", "primary"),
     "news": _icon("news", "primary"),
-    "trending": _icon("fire-heart", "accent"),
+    "trending": _icon("fire", "accent"),
     "word": _icon("book", "white"),
     "trivia": _icon("light", "primary"),
     "arrow_up": _icon("long-arrow-up", "gain", size=48),
