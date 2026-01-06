@@ -19,7 +19,8 @@ CHART_THEME = {
     "gain": "2E7D32",
     "loss": "C62828",
     "accent": "E65100",
-    "muted": "999999"
+    "muted": "999999",
+    "white": "FFFFFF"
 }
 
 def _icon(name, color_key, size=96):
@@ -29,8 +30,8 @@ def _icon(name, color_key, size=96):
 ICONS = {
     "market": _icon("line-chart", "primary"),
     "news": _icon("news", "primary"),
-    "trending": _icon("fire", "accent"),
-    "word": _icon("book", "primary"),
+    "trending": _icon("fire-heart", "accent"),
+    "word": _icon("book", "white"),
     "trivia": _icon("light", "primary"),
     "arrow_up": _icon("long-arrow-up", "gain", size=48),
     "arrow_down": _icon("long-arrow-down", "loss", size=48),
