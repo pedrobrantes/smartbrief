@@ -2,6 +2,7 @@ import sys
 import os
 from datetime import datetime
 from jinja2 import Environment, FileSystemLoader
+from mjml import mjml_to_html # Import the MJML compiler
 
 # Path fix
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -16,7 +17,7 @@ from src.core.mailer import send_email
 def main():
     print("🚀 Starting SmartBrief OS...")
 
-    # 1. Collect Data (Parallelizable in future)
+    # 1. Collect Data
     print("📥 Collecting Finance...")
     market_data = get_market_data()
     
@@ -27,7 +28,6 @@ def main():
     print("🧠 Editor-in-Chief is working...")
     report = generate_daily_report(market_data, news_data)
     
-    # Extract AI decisions
     market_summary = report.get("market_summary", "")
     news_summary = report.get("news_summary", "")
     word_data = report.get("word_of_day", {})
@@ -40,29 +40,33 @@ def main():
         print(f"🎨 Generating {chart_conf.get('type')} chart...")
         chart_url = generate_chart_url(market_data, chart_type=chart_conf.get('type', 'bar'))
 
-    # 4. Render
-    print("📝 Rendering HTML...")
+    # 4. Render (Jinja2 + MJML)
+    print("📝 Compiling MJML to HTML...")
     env = Environment(loader=FileSystemLoader('src/templates'))
-    template = env.get_template('email.html')
+    # Load the .mjml file instead of .html
+    template = env.get_template('email.mjml')
     
-    html_content = template.render(
+    # First: Render Jinja logic inside the MJML
+    rendered_mjml = template.render(
         title="Daily Briefing",
         date=datetime.now().strftime("%B %d, %Y"),
         market_items=market_data,
         news_items=news_data,
         chart_url=chart_url,
         palette=CHART_THEME,
-        # AI Content
         market_summary=market_summary,
         news_summary=news_summary,
         word=word_data,
         trivia=trivia
     )
 
+    # Second: Compile MJML to responsive HTML
+    final_html = mjml_to_html(rendered_mjml)
+
     # 5. Send
     print(f"📨 Sending to {EMAIL_TO}...")
     try:
-        send_email(EMAIL_TO, f"Briefing: {datetime.now().strftime('%d/%m')}", html_content)
+        send_email(EMAIL_TO, f"SmartBrief: {datetime.now().strftime('%d/%m')}", final_html.html)
         print("✅ Sent!")
     except Exception as e:
         print(f"❌ Failed: {e}")
