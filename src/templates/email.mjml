@@ -9,6 +9,7 @@
     <mj-style>
       .round-box { border-radius: 16px; overflow: hidden; }
       .shadow { box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+      .trend-item { border-bottom: 1px solid #EEE; }
     </mj-style>
   </mj-head>
 
@@ -31,19 +32,15 @@
 
       <mj-section padding="20px 30px">
         <mj-column background-color="#F5F5F5" border-left="4px solid {{ palette.primary }}" border-radius="4px" padding="10px">
-          <mj-text>
-            <strong>Market:</strong> {{ market_summary }}
-          </mj-text>
-          <mj-text padding-top="10px">
-            <strong>News:</strong> {{ news_summary }}
-          </mj-text>
+          <mj-text><strong>Market:</strong> {{ market_summary }}</mj-text>
+          <mj-text padding-top="10px"><strong>News:</strong> {{ news_summary }}</mj-text>
         </mj-column>
       </mj-section>
 
       {% if chart_url %}
       <mj-section padding="0 30px 20px 30px">
         <mj-column>
-          <mj-image src="{{ chart_url }}" border-radius="8px" alt="Market Chart" />
+          <mj-image src="{{ chart_url }}" border-radius="8px" alt="Market Chart" fluid-on-mobile="true" />
         </mj-column>
       </mj-section>
       {% endif %}
@@ -57,10 +54,12 @@
           <mj-table padding="0">
             {% for item in market_items %}
             <tr style="border-bottom:1px solid #F5F5F5;">
-              <td style="padding: 10px 0; font-weight: 600;">{{ item.name }}</td>
-              <td style="padding: 10px 0; text-align: right;">
-                {{ "%.2f"|format(item.price) }}
-                <span style="color: {% if item.change >= 0 %}{{ palette.gain }}{% else %}{{ palette.loss }}{% endif %}; font-weight: bold; margin-left: 8px;">
+              <td style="padding: 12px 0; font-weight: 600; color: #3E2723;">
+                {{ item.name }}
+              </td>
+              <td style="padding: 12px 0; text-align: right;">
+                <span style="font-size: 14px; color: #555;">{{ "%.2f"|format(item.price) }}</span>
+                <span style="display: inline-block; width: 70px; text-align: right; color: {% if item.change >= 0 %}{{ palette.gain }}{% else %}{{ palette.loss }}{% endif %}; font-weight: bold; background: rgba(0,0,0,0.03); padding: 2px 6px; border-radius: 4px; margin-left: 10px;">
                    {% if item.change >= 0 %}▲{% else %}▼{% endif %} {{ "%.2f"|format(item.change) }}%
                 </span>
               </td>
@@ -70,29 +69,38 @@
         </mj-column>
       </mj-section>
 
+      <mj-section padding="20px 30px 10px 30px">
+        <mj-column>
+          <mj-text font-size="12px" text-transform="uppercase" color="#999" letter-spacing="1px" padding-bottom="10px">
+            🔥 Trending in Brazil
+          </mj-text>
+          
+          {% for trend in trends[:5] %}
+          <mj-text padding="8px 0" css-class="trend-item">
+            <span style="font-weight: bold; color: {{ palette.primary }}; font-size: 15px;">{{ loop.index }}.</span>
+            <a href="{{ trend.link }}" style="text-decoration: none; color: {{ palette.text }}; font-weight: 600; font-size: 15px; margin-left: 5px;">
+              {{ trend.title }}
+            </a>
+            <span style="float: right; font-size: 11px; color: #999; background: #EEE; padding: 2px 6px; border-radius: 10px;">
+              {{ trend.traffic }} searches
+            </span>
+          </mj-text>
+          {% endfor %}
+        </mj-column>
+      </mj-section>
+
       <mj-section padding="20px 30px">
-        <mj-column border="1px solid #EEE" border-radius="8px" background-color="#FAFAFA" padding="10px">
-          <mj-text font-size="10px" text-transform="uppercase" color="#999" letter-spacing="1px">
-            Word of the Day
-          </mj-text>
-          <mj-text font-size="18px" color="{{ palette.primary }}" font-weight="bold" padding-top="5px">
-            {{ word.word }}
-          </mj-text>
-          <mj-text color="#555">
-            {{ word.translation }}
-          </mj-text>
-          <mj-text font-style="italic" color="#777" padding-top="5px">
-            "{{ word.example }}"
-          </mj-text>
+        <mj-column border="1px solid #EEE" border-radius="8px" background-color="#FAFAFA" padding="15px">
+          <mj-text font-size="10px" text-transform="uppercase" color="#999" letter-spacing="1px">Word of the Day</mj-text>
+          <mj-text font-size="18px" color="{{ palette.primary }}" font-weight="bold" padding-top="5px">{{ word.word }}</mj-text>
+          <mj-text color="#555">{{ word.translation }}</mj-text>
+          <mj-text font-style="italic" color="#777" padding-top="5px">"{{ word.example }}"</mj-text>
         </mj-column>
       </mj-section>
 
       <mj-section padding="10px 30px 30px 30px">
         <mj-column>
-          <mj-text font-size="12px" text-transform="uppercase" color="#999" letter-spacing="1px" padding-bottom="10px">
-            Latest Updates
-          </mj-text>
-
+          <mj-text font-size="12px" text-transform="uppercase" color="#999" letter-spacing="1px" padding-bottom="10px">Latest Headlines</mj-text>
           {% for news in news_items %}
           <mj-text padding="10px 0">
             {% if "Topic:" in news.tag %}
@@ -100,9 +108,7 @@
               {{ news.tag|replace("Topic: ", "") }}
             </span>
             {% endif %}
-            <a href="{{ news.link }}" style="text-decoration: none; color: {{ palette.text }}; font-weight: 600; font-size: 15px;">
-              {{ news.title }}
-            </a>
+            <a href="{{ news.link }}" style="text-decoration: none; color: {{ palette.text }}; font-weight: 600; font-size: 15px;">{{ news.title }}</a>
             <br />
             <span style="font-size: 11px; color: #999;">{{ news.source }}</span>
           </mj-text>
@@ -110,17 +116,7 @@
         </mj-column>
       </mj-section>
 
-      <mj-section background-color="#FAFAFA" padding="15px">
-        <mj-column>
-          <mj-text align="center" font-size="12px" color="#666">
-            💡 {{ trivia }}
-          </mj-text>
-        </mj-column>
-      </mj-section>
-
     </mj-wrapper>
-    
     <mj-section padding="20px"></mj-section>
-
   </mj-body>
 </mjml>
