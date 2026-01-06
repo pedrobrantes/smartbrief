@@ -9,7 +9,9 @@ EMAIL_TO = os.getenv("EMAIL_TO")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 # AI Configuration
-GEMINI_MODEL = "gemini-1.5-flash"  # Change to 'gemini-2.0-flash' if available/quota permits
+# Updated to the requested model. 
+# Note: Ensure your API Key has access to the 3.0 preview scope.
+GEMINI_MODEL = "gemini-3-pro-preview" 
 
 # 1. Finance Config
 TICKERS = [
@@ -37,3 +39,4 @@ CHART_THEME = {
     "loss": "#EF5350",
     "grid": "rgba(62, 39, 35, 0.1)"
 }
+
