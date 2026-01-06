@@ -30,9 +30,9 @@ ICONS = {
     "market": _icon("line-chart", "primary"),
     "news": _icon("news", "primary"),
     "trending": _icon("fire", "accent"),
-    "word": _icon("dictionary", "primary"),
+    "word": _icon("book", "primary"),
     "trivia": _icon("light", "primary"),
-    "arrow_up": _icon("filled-sent", "gain", size=48),
-    "arrow_down": _icon("filled-sent", "loss", size=48),
+    "arrow_up": _icon("long-arrow-up", "gain", size=48),
+    "arrow_down": _icon("long-arrow-down", "loss", size=48),
     "link": _icon("external-link", "muted", size=48)
 }
