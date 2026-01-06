@@ -9,6 +9,7 @@
     <mj-style>
       .round-box { border-radius: 24px; overflow: hidden; }
       .shadow { box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+      .icon-align { vertical-align: middle; padding-bottom: 2px; }
     </mj-style>
   </mj-head>
 
@@ -17,9 +18,9 @@
 
     <mj-wrapper background-color="#FFFFFF" padding="0" css-class="round-box shadow">
 
-      <mj-section background-color="#795548" padding="35px 30px">
+      <mj-section background-color="#795548" padding="40px 30px">
         <mj-column>
-          <mj-text color="#FFFFFF" font-size="26px" font-weight="900" align="center" letter-spacing="-1px">
+          <mj-text color="#FFFFFF" font-size="28px" font-weight="900" align="center" letter-spacing="-1px">
             {{ title }}
           </mj-text>
           <mj-text color="rgba(255,255,255,0.7)" font-size="12px" align="center" text-transform="uppercase" letter-spacing="2px">
@@ -31,17 +32,19 @@
       <mj-section padding="30px 30px 10px 30px">
         <mj-column>
           <mj-text font-size="15px" line-height="1.6" color="#5D4037">
-            <span style="font-weight:bold; color:#795548;">Market:</span> {{ market_summary }}
+            <img src="{{ icons.market }}" width="16" height="16" class="icon-align" /> 
+            <span style="font-weight:bold; color:#795548; margin-left:5px;">Market:</span> {{ market_summary }}
           </mj-text>
           <mj-text font-size="15px" line-height="1.6" color="#5D4037" padding-top="10px">
-            <span style="font-weight:bold; color:#795548;">News:</span> {{ news_summary }}
+            <img src="{{ icons.news }}" width="16" height="16" class="icon-align" />
+            <span style="font-weight:bold; color:#795548; margin-left:5px;">News:</span> {{ news_summary }}
           </mj-text>
         </mj-column>
       </mj-section>
 
-      <mj-section padding="10px 30px">
+      <mj-section padding="20px 30px">
         <mj-column>
-          <mj-text font-size="10px" text-transform="uppercase" color="#999" letter-spacing="1px" font-weight="bold" padding-bottom="10px">
+          <mj-text font-size="11px" text-transform="uppercase" color="#999" letter-spacing="1px" font-weight="bold" padding-bottom="15px">
             Asset Performance
           </mj-text>
           
@@ -52,25 +55,24 @@
                 <td style="padding:4px 0; font-weight:700; color:#3E2723; font-size:13px; width:22%;">
                   {{ item.name }}
                 </td>
-                
                 <td style="padding:4px 5px; text-align:center; width:33%;">
                   {% if item.sparkline %}
                   <img src="{{ item.sparkline }}" width="90" height="35" style="display:block;" />
                   {% endif %}
                 </td>
-
                 <td style="padding:4px 0; text-align:right; font-size:12px; color:#555; width:20%;">
                   {{ "%.2f"|format(item.price) }}
                 </td>
-
                 <td style="padding:4px 0; text-align:right; width:25%;">
                   {% if item.change >= 0 %}
                     <span style="background-color:#E8F5E9; color:#2E7D32; padding:3px 8px; border-radius:50px; font-weight:bold; font-size:10px;">
-                      +{{ "%.2f"|format(item.change) }}%
+                      <img src="{{ icons.arrow_up }}" width="10" height="10" style="vertical-align:middle; margin-right:2px;" />
+                      {{ "%.2f"|format(item.change) }}%
                     </span>
                   {% else %}
                     <span style="background-color:#FFEBEE; color:#C62828; padding:3px 8px; border-radius:50px; font-weight:bold; font-size:10px;">
-                      {{ "%.2f"|format(item.change) }}%
+                       <img src="{{ icons.arrow_down }}" width="10" height="10" style="vertical-align:middle; margin-right:2px;" />
+                      {{ "%.2f"|format(item.change|abs) }}%
                     </span>
                   {% endif %}
                 </td>
@@ -83,15 +85,15 @@
 
       <mj-section padding="10px 30px 20px 30px">
         <mj-column>
-          <mj-text font-size="10px" text-transform="uppercase" color="#999" letter-spacing="1px" font-weight="bold" padding-bottom="10px">
-            Trending Now 🇧🇷
+          <mj-text font-size="11px" text-transform="uppercase" color="#999" letter-spacing="1px" font-weight="bold" padding-bottom="10px">
+             <img src="{{ icons.trending }}" width="12" height="12" class="icon-align" style="margin-right:4px; opacity:0.6" /> Trending Now
           </mj-text>
           
           <mj-text padding="0">
             <table style="width:100%; border-collapse:collapse;">
               {% for trend in trends[:5] %}
               <tr style="border-bottom: 1px solid #F9F9F9;">
-                <td style="padding:10px 0; font-weight:bold; color:#A1887F; width:20px; font-size:13px;">{{ loop.index }}</td>
+                <td style="padding:10px 0; font-weight:bold; color:#A1887F; width:25px; font-size:13px;">{{ loop.index }}</td>
                 <td style="padding:10px 0;">
                   <a href="{{ trend.link }}" style="text-decoration:none; color:#3E2723; font-weight:600; font-size:13px;">
                     {{ trend.title }}
@@ -109,14 +111,13 @@
 
       <mj-section padding="10px 30px 30px 30px">
         <mj-column>
-          <mj-text font-size="10px" text-transform="uppercase" color="#999" letter-spacing="1px" font-weight="bold" padding-bottom="10px">
-            Selected Headlines
+          <mj-text font-size="11px" text-transform="uppercase" color="#999" letter-spacing="1px" font-weight="bold" padding-bottom="10px">
+            <img src="{{ icons.news }}" width="12" height="12" class="icon-align" style="margin-right:4px; opacity:0.6" /> Selected Headlines
           </mj-text>
 
           {% for news in news_items[:8] %}
           <mj-text padding="0">
             <div style="background-color:#FAFAFA; border-radius:12px; padding:12px; margin-bottom:10px; border:1px solid #F0F0F0;">
-              
               {% if "Topic:" in news.tag %}
               <div style="margin-bottom:6px;">
                 <span style="background-color:#EFEBE9; color:#795548; font-size:9px; padding:3px 6px; border-radius:6px; font-weight:bold; text-transform:uppercase; letter-spacing:0.5px;">
@@ -124,9 +125,9 @@
                 </span>
               </div>
               {% endif %}
-
               <a href="{{ news.link }}" style="text-decoration:none; color:#3E2723; font-weight:bold; font-size:14px; line-height:1.4; display:block;">
-                {{ news.title }}
+                {{ news.title }} 
+                <img src="{{ icons.link }}" width="10" height="10" style="opacity:0.4; margin-left:4px;" />
               </a>
               <div style="font-size:10px; color:#999; margin-top:4px;">
                 {{ news.source }}
@@ -141,7 +142,10 @@
         <mj-column>
            <mj-text padding="0">
              <div style="background-color:#795548; color:white; border-radius:16px; padding:20px; text-align:center;">
-               <p style="margin:0; font-size:9px; text-transform:uppercase; opacity:0.7; letter-spacing:2px;">Word of the Day</p>
+               <p style="margin:0; font-size:9px; text-transform:uppercase; opacity:0.7; letter-spacing:2px;">
+                  <img src="https://api.iconify.design/ph:book-bookmark-bold.png?color=white&height=12" class="icon-align" style="margin-right:5px" /> 
+                  Word of the Day
+               </p>
                <h2 style="margin:5px 0 10px 0; font-size:22px;">{{ word.word }}</h2>
                <p style="margin:0; font-size:13px; font-weight:300;">{{ word.translation }}</p>
                <p style="margin:8px 0 0 0; font-size:12px; font-style:italic; opacity:0.8;">"{{ word.example }}"</p>
@@ -150,10 +154,11 @@
         </mj-column>
       </mj-section>
 
-      <mj-section background-color="#FAFAFA" padding="15px">
+      <mj-section background-color="#FAFAFA" padding="20px">
         <mj-column>
           <mj-text align="center" font-size="11px" color="#AAA">
-            💡 Trivia: {{ trivia }}
+            <img src="{{ icons.trivia }}" width="12" height="12" class="icon-align" style="margin-right:4px;" />
+            Trivia: {{ trivia }}
           </mj-text>
         </mj-column>
       </mj-section>
