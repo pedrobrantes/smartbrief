@@ -9,36 +9,38 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from src.settings import EMAIL_TO, CHART_THEME
 from src.collectors.finance import get_market_data
 from src.collectors.news import get_news_briefing
-from src.collectors.trends import get_google_trends # Import New Module
-from src.visualizers.charts import generate_chart_url
+from src.collectors.trends import get_google_trends
+from src.visualizers.charts import generate_sparkline_url, generate_chart_url
 from src.agents.analyst import generate_daily_report
 from src.core.mailer import send_email
 
 def main():
     print("🚀 Starting SmartBrief OS...")
 
-    # 1. Collect Data
-    print("📥 Collecting Finance...")
+    print("📥 Collecting Data...")
     market_data = get_market_data()
-    
-    print("📥 Collecting News...")
     news_data = get_news_briefing()
+    trends_data = get_google_trends(geo="BR")
 
-    print("📥 Collecting Trends...")
-    trends_data = get_google_trends(geo="BR") # Get Trends
+    print("🎨 Generating Sparklines...")
+    for item in market_data:
+        item['sparkline'] = generate_sparkline_url(
+            item.get('history', []), 
+            item['change'] >= 0
+        )
 
-    # 2. AI Processing
     print("🧠 Editor-in-Chief is working...")
     report = generate_daily_report(market_data, news_data)
     
-    # 3. Visualization
+    # Extract AI decisions
     chart_conf = report.get("chart_config", {})
-    chart_url = None
+    
+    # Generate Main Chart (if AI requested)
+    main_chart_url = None
     if chart_conf.get("show"):
         print(f"🎨 Generating {chart_conf.get('type')} chart...")
-        chart_url = generate_chart_url(market_data, chart_type=chart_conf.get('type', 'bar'))
+        main_chart_url = generate_chart_url(market_data, chart_type=chart_conf.get('type', 'bar'))
 
-    # 4. Render
     print("📝 Compiling MJML...")
     env = Environment(loader=FileSystemLoader('src/templates'))
     template = env.get_template('email.mjml')
@@ -48,19 +50,18 @@ def main():
         date=datetime.now().strftime("%B %d, %Y"),
         market_items=market_data,
         news_items=news_data,
-        trends=trends_data, # Pass Trends to Template
-        chart_url=chart_url,
+        trends=trends_data,
         palette=CHART_THEME,
-        market_summary=report.get("market_summary", ""),
-        news_summary=report.get("news_summary", ""),
+        chart_url=main_chart_url,
+        market_summary=report.get("market_summary", "No data."),
+        news_summary=report.get("news_summary", "No data."),
         word=report.get("word_of_day", {}),
         trivia=report.get("trivia", "")
     )
 
     final_html = mjml_to_html(rendered_mjml)
 
-    # 5. Send
-    print(f"📨 Sending...")
+    print(f"📨 Sending to {EMAIL_TO}...")
     try:
         send_email(EMAIL_TO, f"SmartBrief: {datetime.now().strftime('%d/%m')}", final_html.html)
         print("✅ Sent!")
