@@ -10,6 +10,10 @@
       .round-box { border-radius: 24px; overflow: hidden; }
       .shadow { box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
       .icon-align { vertical-align: middle; padding-bottom: 2px; }
+      .word-container { background-color: #795548; color: white; border-radius: 16px; padding: 25px; text-align: center; }
+      .word-meta { font-size: 13px; opacity: 0.9; font-weight: 300; margin-bottom: 15px; display: block; }
+      .word-def { margin-bottom: 15px; text-align: left; background: rgba(0,0,0,0.1); padding: 10px; border-radius: 8px; }
+      .pt-text { color: rgba(255,255,255,0.7); font-size: 13px; font-style: italic; display: block; margin-top: 2px; }
     </mj-style>
   </mj-head>
 
@@ -149,14 +153,27 @@
       <mj-section padding="0 30px 30px 30px">
         <mj-column>
            <mj-text padding="0">
-             <div style="background-color:#795548; color:white; border-radius:16px; padding:20px; text-align:center;">
-               <p style="margin:0; font-size:9px; text-transform:uppercase; opacity:0.9; letter-spacing:2px;">
+             <div class="word-container">
+               <p style="margin:0; font-size:9px; text-transform:uppercase; opacity:0.9; letter-spacing:2px; margin-bottom: 10px;">
                   <img src="{{ icons.word }}" width="20" height="20" class="icon-align" style="margin-right:5px;" /> 
                   Word of the Day
                </p>
-               <h2 style="margin:5px 0 10px 0; font-size:22px;">{{ word.word }}</h2>
-               <p style="margin:0; font-size:13px; font-weight:300;">{{ word.translation }}</p>
-               <p style="margin:8px 0 0 0; font-size:12px; font-style:italic; opacity:0.8;">"{{ word.example }}"</p>
+               
+               <h2 style="margin:0; font-size:26px; line-height: 1.2;">{{ word.word }}</h2>
+               <span class="word-meta">
+                 {{ word.pronunciation }} • {{ word.translation }}
+               </span>
+               
+               <div class="word-def">
+                 <span style="display:block; font-weight:bold; font-size:14px;">{{ word.definition_en }}</span>
+                 <span class="pt-text">{{ word.definition_pt }}</span>
+               </div>
+
+               <div style="text-align: left; padding: 0 5px;">
+                 <span style="display:block; font-size:14px;">"{{ word.example_en }}"</span>
+                 <span class="pt-text">"{{ word.example_pt }}"</span>
+               </div>
+
              </div>
            </mj-text>
         </mj-column>
