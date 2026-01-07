@@ -7,6 +7,10 @@
 ![Build](https://img.shields.io/github/actions/workflow/status/pedrobrantes/smartbrief/daily.yml?label=Daily%20Briefing)
 ![License](https://img.shields.io/badge/License-MIT-green)
 
+<p align="center">
+  <img src="assets/preview.png" alt="SmartBrief Email Preview" width="600" style="border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+</p>
+
 ## What is this?
 
 **SmartBrief** is a simple tool I built to avoid opening 5 different websites every morning. It runs automatically once a day, collects raw data from trusted sources, and emails me a formatted briefing.
