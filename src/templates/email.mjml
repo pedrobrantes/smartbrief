@@ -61,29 +61,29 @@
           </mj-text>
 
           <mj-text padding="0">
-            <table style="width:100%; border-collapse:separate; border-spacing: 0 6px;">
+            <table style="width:100%; border-collapse:separate; border-spacing: 0 4px;">
               {% for item in market_items %}
               <tr style="background-color:#FFF;">
-                <td style="padding:4px 0; font-weight:700; color:#3E2723; font-size:13px; width:22%;">
+                <td style="padding:4px 0; font-weight:700; color:#3E2723; font-size:12px; width:22%;">
                   {{ item.name }}
                 </td>
                 <td style="padding:4px 5px; text-align:center; width:33%;">
                   {% if item.sparkline %}
-                  <img src="{{ item.sparkline }}" width="90" height="35" style="display:block;" />
+                  <img src="{{ item.sparkline }}" width="80" height="30" style="display:block;" />
                   {% endif %}
                 </td>
-                <td style="padding:4px 0; text-align:right; font-size:12px; color:#555; width:20%;">
+                <td style="padding:4px 0; text-align:right; font-size:11px; color:#555; width:20%;">
                   {{ "%.2f"|format(item.price) }}
                 </td>
                 <td style="padding:4px 0; text-align:right; width:25%;">
                   {% if item.change >= 0 %}
-                    <span style="background-color:#E8F5E9; color:#2E7D32; padding:3px 8px; border-radius:50px; font-weight:bold; font-size:10px;">
-                      <img src="{{ icons.arrow_up }}" width="12" height="12" style="vertical-align:middle; margin-right:2px;" />
+                    <span style="background-color:#E8F5E9; color:#2E7D32; padding:3px 8px; border-radius:50px; font-weight:bold; font-size:9px;">
+                      <img src="{{ icons.arrow_up }}" width="10" height="10" style="vertical-align:middle; margin-right:2px;" />
                       {{ "%.2f"|format(item.change) }}%
                     </span>
                   {% else %}
-                    <span style="background-color:#FFEBEE; color:#C62828; padding:3px 8px; border-radius:50px; font-weight:bold; font-size:10px;">
-                       <img src="{{ icons.arrow_down }}" width="12" height="12" style="vertical-align:middle; margin-right:2px;" />
+                    <span style="background-color:#FFEBEE; color:#C62828; padding:3px 8px; border-radius:50px; font-weight:bold; font-size:9px;">
+                       <img src="{{ icons.arrow_down }}" width="10" height="10" style="vertical-align:middle; margin-right:2px;" />
                       {{ "%.2f"|format(item.change|abs) }}%
                     </span>
                   {% endif %}
