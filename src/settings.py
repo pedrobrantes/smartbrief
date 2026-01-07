@@ -6,7 +6,7 @@ load_dotenv()
 RESEND_API_KEY = os.getenv("RESEND_API_KEY")
 EMAIL_TO = os.getenv("EMAIL_TO")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-GEMINI_MODELS_PRIORITY = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]
+GEMINI_MODELS_PRIORITY = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-3-flash", "gemini-3-pro-preview", "gemini-3-pro", "gemini-1.5-flash", "gemma-3-27b-it", "gemini-2.0-flash-lite", "gemini-flash-lite-latest", "gemini-flash-latest", "gemini-pro-latest"]
 
 TICKERS = ["USDBRL=X", "BTC-USD", "PETR4.SA", "VALE3.SA", "MXRF11.SA"]
 RSS_FEEDS = ["https://g1.globo.com/rss/g1/", "https://feeds.bbci.co.uk/news/rss.xml"]
@@ -30,8 +30,7 @@ def _icon(name, color_key, size=96):
 ICONS = {
     "market": _icon("line-chart", "primary"),
     "news": _icon("news", "primary"),
-    # Switched to 'trending-up' for better stability
-    "trending": _icon("trending-up", "accent"),
+    "trending": _icon("hashtag", "accent"), # Fixed: 'hashtag' exists in Icons8
     "word": _icon("book", "white"),
     "trivia": _icon("light", "primary"),
     "arrow_up": _icon("long-arrow-up", "gain", size=48),
