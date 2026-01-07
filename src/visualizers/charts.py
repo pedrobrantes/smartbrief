@@ -1,8 +1,8 @@
 import requests
+from typing import List, Dict, Any, Optional
 from src.settings import CHART_THEME
 
-def generate_sparkline_url(data_points, is_positive):
-    # ... (código do sparkline permanece igual) ...
+def generate_sparkline_url(data_points: List[float], is_positive: bool) -> Optional[str]:
     if not data_points: return None
     
     color = f"#{CHART_THEME['gain']}" if is_positive else f"#{CHART_THEME['loss']}"
@@ -48,13 +48,12 @@ def generate_sparkline_url(data_points, is_positive):
     except:
         return None
 
-def generate_chart_url(data, chart_type="bar"):
+def generate_chart_url(data: List[Dict[str, Any]], chart_type: str = "bar") -> Optional[str]:
     if not data or chart_type == "none":
         return None
 
     labels = [d['name'] for d in data]
     values = [d['change'] for d in data]
-    # Adicionando # para garantir que o QuickChart entenda como Hex
     colors = [f"#{CHART_THEME['gain']}" if v >= 0 else f"#{CHART_THEME['loss']}" for v in values]
 
     config = {
@@ -64,7 +63,6 @@ def generate_chart_url(data, chart_type="bar"):
             "datasets": [{
                 "data": values,
                 "backgroundColor": colors,
-                # Reduzi o borderRadius para evitar bugs visuais em barras pequenas
                 "borderRadius": 4, 
                 "borderSkipped": False,
             }]
@@ -74,7 +72,6 @@ def generate_chart_url(data, chart_type="bar"):
             "legend": {"display": False},
             "layout": {"padding": {"top": 10, "bottom": 10, "left": 10, "right": 10}},
             "scales": {
-                # Garante que o eixo Y (valores) apareça, mas sem linhas de grade feias
                 "yAxes": [{"display": False}],
                 "xAxes": [{
                     "display": True,
@@ -90,10 +87,8 @@ def generate_chart_url(data, chart_type="bar"):
         }
     }
 
-    # Ajuste para gráfico horizontal
     if chart_type == "horizontalBar":
         config["options"]["scales"]["xAxes"][0]["display"] = False
-        # No horizontal, mostramos os nomes no eixo Y
         config["options"]["scales"]["yAxes"] = [{
             "display": True, 
             "gridLines": {"display": False}, 
@@ -106,7 +101,7 @@ def generate_chart_url(data, chart_type="bar"):
             json={
                 "chart": config,
                 "width": 600,
-                "height": 300, # Aumentei altura para dar espaço
+                "height": 300,
                 "backgroundColor": "white",
                 "format": "png",
                 "version": "2"

@@ -1,12 +1,12 @@
 import math
 import yfinance as yf
+from typing import List, Dict, Any
 from src.settings import TICKERS
 
-def get_market_data():
-    results = []
+def get_market_data() -> List[Dict[str, Any]]:
+    results: List[Dict[str, Any]] = []
     
     try:
-        # Fetch 7 days of history for sparklines
         tickers_str = " ".join(TICKERS)
         data = yf.download(tickers_str, period="7d", progress=False)['Close']
         

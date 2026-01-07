@@ -1,10 +1,11 @@
 import json
 import time
+from typing import List, Dict, Any
 from google import genai
 from google.genai import types
 from src.settings import GEMINI_API_KEY, GEMINI_MODELS_PRIORITY
 
-def generate_daily_report(market_data, news_data):
+def generate_daily_report(market_data: List[Dict[str, Any]], news_data: List[Dict[str, Any]]) -> Dict[str, Any]:
     fallback = {
         "market_summary": "Market data analyzed. Check details below.",
         "news_summary": "Top headlines synthesized. Links available.",
