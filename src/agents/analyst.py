@@ -10,9 +10,12 @@ def generate_daily_report(market_data, news_data):
         "news_summary": "Top headlines synthesized. Links available.",
         "word_of_day": {
             "word": "Resilience", 
+            "pronunciation": "/rəˈzilyəns/",
             "translation": "Resiliência", 
-            "definition": "The capacity to recover quickly from difficulties.", 
-            "example": "The system showed resilience by switching models."
+            "definition_en": "The capacity to recover quickly from difficulties.",
+            "definition_pt": "A capacidade de se recuperar rapidamente de dificuldades.", 
+            "example_en": "The system showed resilience by switching models.",
+            "example_pt": "O sistema mostrou resiliência ao trocar de modelos."
         },
         "trivia": "AI models can sometimes be overloaded during peak hours.",
         "chart_config": {"show": True, "type": "bar"}
@@ -37,7 +40,14 @@ def generate_daily_report(market_data, news_data):
     Generate JSON:
     1. "market_summary": Witty summary (40 words).
     2. "news_summary": Synthesized news (50 words).
-    3. "word_of_day": "word", "translation", "definition", "example".
+    3. "word_of_day":
+       - "word": English word.
+       - "pronunciation": IPA format (e.g., /.../).
+       - "translation": PT-BR translation.
+       - "definition_en": Definition in English.
+       - "definition_pt": Definition in PT-BR.
+       - "example_en": Usage sentence in English.
+       - "example_pt": Same sentence translated to PT-BR.
     4. "trivia": Interesting fact.
     5. "chart_config": {{"show": true, "type": "bar"}}
     """
@@ -57,7 +67,6 @@ def generate_daily_report(market_data, news_data):
 
         except Exception as e:
             err = str(e).upper()
-            # Catch 429 (Rate Limit), 503 (Overloaded), 500 (Internal), 404 (Missing)
             if any(code in err for code in ["429", "503", "500", "404", "RESOURCE_EXHAUSTED", "UNAVAILABLE"]):
                 print(f"   ⚠️ {model_name} unavailable ({err[:15]}...). Switching...")
                 time.sleep(1)
